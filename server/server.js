@@ -1,19 +1,26 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require("express");
+const cors = require("cors");
+const logger = require("morgan");
+const bodyParser = require("body-parser");
+const router = express.Router();
 
-var mysql = require('mysql');
+const app = express();
+const port = 5000;
 
-var con = mysql.createConnection({
-  host: "앤드포인트",
-  user: "admin",
-  database: "test",
-  password: "비번",
-  port: 3306
-});
+app.use(cors());
 
-con.connect();
+// Parse incoming requests data (https://github.com/expressjs/body-parser)
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
 
-app.get('/', (req, res) => res.send('Hello World!'))
+// Log requests to the console.
+app.use(logger("dev"));
 
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+// Route
+const route_root = require("./Router/root");
+
+app.use("/", route_root);
+
+app.listen(port, () =>
+    console.log(`Example app listening at http://localhost:${port}`)
+);
