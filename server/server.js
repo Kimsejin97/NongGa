@@ -2,18 +2,25 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+var db_config = require('./config/config.json')
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-  host: "앤드포인트",
-  user: "admin",
-  database: "test",
-  password: "비번",
+  host: db_config.host,
+  user: db_config.user,
+  database: db_config.database,
+  password: db_config.password,
   port: 3306
 });
 
-con.connect();
+var data = [];
 
-app.get('/', (req, res) => res.send('Hello World!'))
-
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+con.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
+  con.query("SELECT * FROM danger", function (err, result) {
+    if (err) throw err;
+    data = JSON.stringify(result);
+    console.log(data);
+  });
+});
