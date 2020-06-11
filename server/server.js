@@ -15,12 +15,20 @@ var con = mysql.createConnection({
 
 var data = [];
 
+app.get('/', (req, res) => res.send('Hello World!'))
+
 con.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
+});
+
+app.get('/post', function (req, res){
   con.query("SELECT * FROM danger", function (err, result) {
+    con.end();
     if (err) throw err;
     data = JSON.stringify(result);
-    console.log(data);
-  });
+    res.send(data);
+  }); 
 });
+
+app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
